@@ -63,6 +63,24 @@ public enum GoogleComputeInstanceTemplateConfigurationProperty implements Config
       .required(false)
       .build()),
 
+  NETWORK_PROJECT(new SimpleConfigurationPropertyBuilder()
+      .configKey("networkProject")
+      .name("Network Project")
+      .defaultDescription(
+          "The project the nework belongs to.<br />" +
+              "<a target='_blank' href='https://cloud.google.com/compute/docs/networking#networks'>More Information</a>")
+      .defaultValue(null)
+      .required(false)
+      .build()),
+
+  INSTANCE_TAGS(new SimpleConfigurationPropertyBuilder()
+      .configKey("instanceTags")
+      .name("Tags")
+      .defaultDescription("Instance tags")
+      .defaultValue(null)
+      .required(false)
+      .build()),
+
   SUBNETWORK_NAME(new SimpleConfigurationPropertyBuilder()
       .configKey("subnetworkName")
       .name("Subnetwork Name")
