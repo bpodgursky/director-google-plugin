@@ -73,6 +73,14 @@ public enum GoogleComputeInstanceTemplateConfigurationProperty implements Config
       .required(false)
       .build()),
 
+  ALLOW_INTERNET_EGRESS(new SimpleConfigurationPropertyBuilder()
+      .configKey("allowInternetEgress")
+      .name("Allow Internet Egress")
+      .defaultDescription("Allow egress")
+      .defaultValue("true")
+      .required(false)
+      .build()),
+
   INSTANCE_TAGS(new SimpleConfigurationPropertyBuilder()
       .configKey("instanceTags")
       .name("Tags")

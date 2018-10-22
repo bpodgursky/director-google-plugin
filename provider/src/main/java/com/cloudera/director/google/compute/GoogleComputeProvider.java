@@ -16,6 +16,7 @@
 
 package com.cloudera.director.google.compute;
 
+import static com.cloudera.director.google.compute.GoogleComputeInstanceTemplateConfigurationProperty.ALLOW_INTERNET_EGRESS;
 import static com.cloudera.director.google.compute.GoogleComputeInstanceTemplateConfigurationProperty.BOOT_DISK_SIZE_GB;
 import static com.cloudera.director.google.compute.GoogleComputeInstanceTemplateConfigurationProperty.BOOT_DISK_TYPE;
 import static com.cloudera.director.google.compute.GoogleComputeInstanceTemplateConfigurationProperty.DATA_DISK_COUNT;
@@ -306,26 +307,33 @@ public class GoogleComputeProvider
         networkProject = projectId;
       }
 
-      // Compose the network interface.
-      String accessConfigName = "External NAT";
-      final String accessConfigType = "ONE_TO_ONE_NAT";
-      AccessConfig accessConfig = new AccessConfig();
-      accessConfig.setName(accessConfigName);
-      accessConfig.setType(accessConfigType);
+
       NetworkInterface networkInterface = new NetworkInterface();
 
       if (subnetName != null) {
         String region = template.getConfigurationValue(GoogleComputeProviderConfigurationProperty.REGION, templateLocalizationContext);
         String subnetwork = ComputeUrls.buildSubnetUrl(networkProject, region, subnetName);
         networkInterface.setSubnetwork(subnetwork);
-      } 
+      }
       //  only specify network if the subnetwork isn't set
       else if (!networkName.equals("default")) {
         String networkUrl = ComputeUrls.buildNetworkUrl(networkProject, networkName);
         networkInterface.setNetwork(networkUrl);
       }
 
-      networkInterface.setAccessConfigs(Arrays.asList(accessConfig));
+      String allowEgress = template.getConfigurationValue(ALLOW_INTERNET_EGRESS, templateLocalizationContext);
+
+      if(Boolean.parseBoolean(allowEgress)) {
+
+        // Compose the network interface.
+        String accessConfigName = "External NAT";
+        final String accessConfigType = "ONE_TO_ONE_NAT";
+        AccessConfig accessConfig = new AccessConfig();
+        accessConfig.setName(accessConfigName);
+        accessConfig.setType(accessConfigType);
+
+        networkInterface.setAccessConfigs(Arrays.asList(accessConfig));
+      }
 
       // Compose the machine type url.
       String machineTypeName = template.getConfigurationValue(TYPE, templateLocalizationContext);
